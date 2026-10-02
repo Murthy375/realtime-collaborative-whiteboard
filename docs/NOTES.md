@@ -9,3 +9,12 @@
 - I need build a toolbar with these 5 tools.
 - UI just needs to work, it does not have to be A+.
 - Don't add extra stuff, save for later.
+
+# Necessary things I need to have in my backend for now
+
+1. A db schema that stores whiteboard elems
+   - shapes that you have drawn
+   - shapes others have drawn
+   - nums of ppl sharing/in a board session
+
+2. Real-time changes on the canvas using socketio
