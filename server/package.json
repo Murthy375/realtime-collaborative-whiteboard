@@ -3,19 +3,29 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "build": "npx tsc",
-    "dev": "npx tsc",
-    "start": "npx tsc && node ./dist/index.js"
+    "dev": "node ./dist/index.js",
+    "start": "npx tsc && node ./dist/index.js",
+    "db:push": "npx drizzle-kit push",
+    "db:studio": "npx drizzle-kit studio"
   },
   "author": "Sridhar Murthy K Chandra",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.3.0"
+    "dotenv": "^18.0.8",
+    "drizzle-orm": "^1.0.0-rc.4",
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.5",
     "@types/express": "^5.0.6",
+    "@types/node": "^26.6.5",
+    "@types/pg": "^8.23.1",
+    "drizzle-kit": "^1.0.0-rc.4",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2"
   }
 }
