@@ -18,3 +18,9 @@
    - nums of ppl sharing/in a board session
 
 2. Real-time changes on the canvas using socketio
+
+# Implementing separation-of-concerns pattern
+
+- ./server/src/app.ts => inits express app, handles middlewares and routes
+- ./server/src/socket.ts => attaches Socket.IO to the HTTP server, handles realtime events (join room, draw, disconnect)
+- ./server/src/server.ts => entry point: creates the HTTP server, attaches sockets, and starts listening
