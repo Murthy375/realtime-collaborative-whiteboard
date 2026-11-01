@@ -1,15 +1,23 @@
 import { Server as HttpServer } from "http";
 import { Server, Socket } from "socket.io";
 
-let io: Server;
-
 export function initSocket(httpServer: HttpServer): Server {
-  io = new Server(httpServer, {
-    cors: { origin: "http://localhost:3000" },
+  const io = new Server(httpServer, {
+    cors: { origin: process.env.CLIENT_ORIGIN },
   });
 
   io.on("connection", (socket: Socket) => {
-    // here all the stuff happens like join room, send msg and dissconnecting
+    console.log("client connected", socket.id);
+
+    socket.on("join-room", (roomId: string) => {
+      socket.join(roomId);
+
+      socket.to(roomId).emit("user-joined", socket.id);
+    });
+
+    socket.on("disconnect", (reason) => {
+      console.log("client disconnected", socket.id, reason);
+    });
   });
 
   return io;
