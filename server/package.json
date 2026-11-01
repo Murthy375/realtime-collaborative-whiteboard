@@ -2,12 +2,13 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "type": "module",
   "scripts": {
+    "dev": "npx tsx watch src/server.ts",
     "build": "npx tsc",
-    "dev": "node ./dist/index.js",
-    "start": "npx tsc && node ./dist/index.js",
+    "start": "node dist/server.js",
+    "typecheck": "npx tsc --noEmit",
     "db:push": "npx drizzle-kit push",
     "db:studio": "npx drizzle-kit studio"
   },

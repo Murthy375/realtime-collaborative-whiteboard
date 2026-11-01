@@ -6,6 +6,9 @@ const app: Express = express();
 app.use(express.json());
 
 // routes
+app.get("/health", (req: Request, res: Response): void => {
+  res.json({ status: "ok" });
+});
 
 // 404 catch-all
 app.use((req: Request, res: Response): void => {
