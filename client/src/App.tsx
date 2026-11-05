@@ -12,7 +12,7 @@ const App = () => {
         <Route>
           <Route element={<Layout />}>
             {/* routes that need Layout, like Home, Whiteboard, etc */}
-            <Route path="/whiteboard/:id" element={<Whiteboard />} />
+            <Route path="/whiteboard/:whiteboardId" element={<Whiteboard />} />
           </Route>
         </Route>
       </Routes>
