@@ -1,9 +1,5 @@
 export type Tool = "line" | "rect" | "select" | "arrow" | "eraser" | "pan";
 
-export type CanvasProps = {
-  selectedTool: Tool;
-};
-
 // idk why type Point is there ?
 export type Point = {
   x: number;
@@ -36,8 +32,3 @@ export type ArrowData = {
 };
 
 export type ShapeData = RectData | ArrowData;
-
-export type ToolbarProps = {
-  selectedTool: Tool;
-  onToolChange: (tool: Tool) => void;
-};

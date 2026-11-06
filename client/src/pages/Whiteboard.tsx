@@ -1,12 +1,17 @@
+// react
+import { useEffect } from "react";
+
+// components
 import Canvas from "../components/Canvas";
 import Toolbar from "../components/Toolbar";
-import { useState, useEffect } from "react";
+
+// react-router
 import { useParams } from "react-router";
-import type { Tool } from "../types";
+
+// socket
 import { socket } from "../socket";
 
 const Whiteboard = () => {
-  const [selectedTool, setSelectedTool] = useState<Tool>("select");
   const { whiteboardId } = useParams();
 
   useEffect(() => {
@@ -26,8 +31,8 @@ const Whiteboard = () => {
 
   return (
     <div>
-      <Canvas selectedTool={selectedTool} />
-      <Toolbar selectedTool={selectedTool} onToolChange={setSelectedTool} />
+      <Canvas />
+      <Toolbar />
     </div>
   );
 };

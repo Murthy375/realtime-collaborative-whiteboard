@@ -1,14 +1,23 @@
+// konva
 import { Stage, Layer, Rect } from "react-konva";
 import type { KonvaEventObject } from "konva/lib/Node";
 import type { Vector2d } from "konva/lib/types";
 
+// types
 import { DEFAULT_SHAPES } from "../constants/defaultShapes.ts";
-import type { CanvasProps, ShapeData } from "../types.ts";
+import type { ShapeData } from "../types.ts";
 
+// react
 import { useState } from "react";
 
-const Canvas = ({ selectedTool }: CanvasProps) => {
+// zustand
+import { useSlectedToolStore } from "../store/whiteboard.slice.ts";
+
+const Canvas = () => {
   const [shapes, setShapes] = useState<ShapeData[]>([]);
+
+  // witch tool has been selected
+  const selectedTool = useSlectedToolStore((tool) => tool.selectedTool);
 
   function toolClickedHandler(evt: KonvaEventObject<MouseEvent>): void {
     // give me x and y co-ordonates,
@@ -19,7 +28,7 @@ const Canvas = ({ selectedTool }: CanvasProps) => {
     const point: Vector2d | null = stage.getPointerPosition();
     if (!point) return;
 
-    // witch tool has been selected
+
     switch (selectedTool) {
       case "rect": {
         const newShape: ShapeData = {
