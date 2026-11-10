@@ -1,12 +1,26 @@
-import { create } from "zustand";
+// zustand
+import type { StateCreator } from "zustand";
 
-interface SelectedToolState {
-  selectedTool: string;
-  updateSelectedTool: (selectedTool: string) => void;
-}
+// types
+import type { AppStoreTypes, ElementsState, SelectedToolState } from "./types";
 
-export const useSlectedToolStore = create<SelectedToolState>()((set) => ({
+export const selectedToolSlice: StateCreator<
+  AppStoreTypes,
+  [],
+  [],
+  SelectedToolState
+> = (set) => ({
   selectedTool: "select",
   updateSelectedTool: (newSelectedTool: string) =>
     set(() => ({ selectedTool: newSelectedTool })),
-}));
+});
+
+export const elementsSlice: StateCreator<
+  AppStoreTypes,
+  [],
+  [],
+  ElementsState
+> = (set) => ({
+  elements: [],
+  updateElements: (newElements) => set(() => ({ elements: newElements })),
+});

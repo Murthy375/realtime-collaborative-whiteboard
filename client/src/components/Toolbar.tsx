@@ -1,9 +1,9 @@
 // zustand
-import { useSlectedToolStore } from "../store/whiteboard.slice";
+import { useAppStore } from "../store/index.ts";
 
 const Toolbar = () => {
   // get the selected tool from zustand store
-  const selectedTool = useSlectedToolStore((state) => state.selectedTool);
+  const selectedTool = useAppStore((state) => state.selectedTool);
 
   // still have no clue what `getButtonClass` does
   const getButtonClass = (tool: string) => {
@@ -15,8 +15,8 @@ const Toolbar = () => {
     return `${base} bg-zinc-800 text-zinc-300 border-zinc-700/50 hover:bg-zinc-700/70`;
   };
 
-  // the logic to update the selected tool to newly selected tool via zustand store
-  const onToolChange = useSlectedToolStore((tool) => tool.updateSelectedTool);
+  // the logic to update the selected tool to newly selected tool via zustand
+  const onToolChange = useAppStore((state) => state.updateSelectedTool);
 
   return (
     <div className="bg-zinc-900 p-2 flex space-x-2 absolute bottom-0 left-0 right-0 w-fit m-auto rounded-lg mb-5">

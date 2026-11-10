@@ -8,16 +8,20 @@ import { DEFAULT_SHAPES } from "../constants/defaultShapes.ts";
 import type { ShapeData } from "../types.ts";
 
 // react
-import { useState } from "react";
+// import { useState } from "react";
 
 // zustand
-import { useSlectedToolStore } from "../store/whiteboard.slice.ts";
+import { useAppStore } from "../store/index.ts";
 
 const Canvas = () => {
-  const [shapes, setShapes] = useState<ShapeData[]>([]);
+  // const [shapes, setShapes] = useState<ShapeData[]>([]); // no need to use local state, zustand handles it
+  const elements = useAppStore((store) => store.elements);
+
+  console.log(elements);
+  console.log(elements.length);
 
   // witch tool has been selected
-  const selectedTool = useSlectedToolStore((tool) => tool.selectedTool);
+  const selectedTool = useAppStore((store) => store.selectedTool);
 
   function toolClickedHandler(evt: KonvaEventObject<MouseEvent>): void {
     // give me x and y co-ordonates,
@@ -27,7 +31,6 @@ const Canvas = () => {
 
     const point: Vector2d | null = stage.getPointerPosition();
     if (!point) return;
-
 
     switch (selectedTool) {
       case "rect": {
@@ -45,7 +48,7 @@ const Canvas = () => {
           rotation: DEFAULT_SHAPES.rect.rotation,
         };
 
-        setShapes((prev) => [...prev, newShape]);
+        useAppStore.getState().updateElements([...elements, newShape]);
         break;
       }
 
@@ -66,19 +69,19 @@ const Canvas = () => {
         onClick={toolClickedHandler}
       >
         <Layer>
-          {shapes.map((shape) => {
-            if (shape.type === "rect") {
+          {elements.map((element) => {
+            if (element.type === "rect") {
               return (
                 <Rect
-                  key={shape.id}
-                  x={shape.x}
-                  y={shape.y}
-                  width={shape.width}
-                  height={shape.height}
-                  fill={shape.fill}
-                  stroke={shape.stroke}
-                  strokeWidth={shape.strokeWidth}
-                  rotation={shape.rotation}
+                  key={element.id}
+                  x={element.x}
+                  y={element.y}
+                  width={element.width}
+                  height={element.height}
+                  fill={element.fill}
+                  stroke={element.stroke}
+                  strokeWidth={element.strokeWidth}
+                  rotation={element.rotation}
                 />
               );
             }
