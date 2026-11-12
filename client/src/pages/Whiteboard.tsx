@@ -23,6 +23,11 @@ const Whiteboard = () => {
     socket.connect();
     socket.emit("join-whiteboard", whiteboardId);
 
+    // listen for whiteboard members event and log the members
+    socket.on("whiteboard-members", (members: string[]) => {
+      console.log("whiteboard members : ", members);
+    });
+
     return () => {
       socket.off("user-joined", onUserJoined);
       socket.disconnect();
