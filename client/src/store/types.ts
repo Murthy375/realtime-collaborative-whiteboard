@@ -1,5 +1,5 @@
 // global types
-import type { ShapeData } from "../types";
+import type { ElementsData } from "../types";
 
 export interface SelectedToolState {
   selectedTool: string;
@@ -7,8 +7,10 @@ export interface SelectedToolState {
 }
 
 export interface ElementsState {
-  elements: ShapeData[];
-  updateElements: (newElements: ShapeData[]) => void;
+  elements: ElementsData[];
+  updateElements: (newElements: ElementsData[]) => void;
+  addRemoteElement: (newElement: ElementsData) => void;
+  addLocalElement: (newElement: ElementsData) => void;
 }
 
 export type AppStoreTypes = SelectedToolState & ElementsState;

@@ -13,5 +13,6 @@ export const DEFAULT_SHAPES = {
     strokeWidth: 3,
     pointerLength: 10,
     pointerWidth: 10,
+    draggable: true,
   },
 };

@@ -29,6 +29,7 @@ export type ArrowData = {
   strokeWidth: number;
   pointerLength: number;
   pointerWidth: number;
+  draggable: boolean;
 };
 
-export type ShapeData = RectData | ArrowData;
+export type ElementsData = RectData | ArrowData;

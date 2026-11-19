@@ -5,7 +5,10 @@ import type { Server, Socket } from "socket.io";
 import { redis } from "../db/redis-connection.js";
 
 // utils
-import { getBannerKeyForWhiteboardForUsers } from "../utils/banners.redis.js";
+import {
+  getBannerKeyForWhiteboardForElements,
+  getBannerKeyForWhiteboardForUsers,
+} from "../utils/banners.redis.js";
 
 export const registerWhiteboardHandlers = (io: Server, socket: Socket) => {
   socket.on("join-whiteboard", async (whiteboardId: string) => {
@@ -26,25 +29,22 @@ export const registerWhiteboardHandlers = (io: Server, socket: Socket) => {
       );
       io.emit("whiteboard-members", members);
 
-      // get whiteboard elements data from redis, if it exists
-      let whiteboardElementsData: any;
-      whiteboardElementsData = await redis.hgetall(
-        `whiteboard:${whiteboardId}:elements`,
+      // Redis stores each element as a JSON value in a hash field.
+      const storedElements = await redis.hgetall(
+        getBannerKeyForWhiteboardForElements(whiteboardId),
+      );
+      const whiteboardElementsData = Object.values(storedElements).flatMap(
+        (value) => {
+          const element: unknown = JSON.parse(value);
+          return Array.isArray(element) ? element : [element];
+        },
       );
 
-      if (!whiteboardElementsData) {
-        // check from db, query to get whiteboard elements data from db [simulation]
-        whiteboardElementsData = [];
-
-        // store the queried data in redis before emetting it to all clients in the whiteboard
-        await redis.hset(`whiteboard:${whiteboardId}:elements`, {
-          whiteboardElementsData,
-        });
-      }
-      // emit the elements data to all clients in the whiteboard
-      socket
-        .to(whiteboardId)
-        .emit("whiteboard-elements", JSON.stringify(whiteboardElementsData));
+      // Send the initial data only to the client that just joined.
+      socket.emit(
+        "whiteboard-elements",
+        JSON.stringify(whiteboardElementsData),
+      );
     } catch (error) {
       console.error("join-whiteboard failed", error);
     }

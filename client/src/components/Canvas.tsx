@@ -1,27 +1,56 @@
+// react
+import { useEffect } from "react";
+
 // konva
 import { Stage, Layer, Rect } from "react-konva";
 import type { KonvaEventObject } from "konva/lib/Node";
 import type { Vector2d } from "konva/lib/types";
 
 // types
-import { DEFAULT_SHAPES } from "../constants/defaultShapes.ts";
-import type { ShapeData } from "../types.ts";
-
-// react
-// import { useState } from "react";
+import { DEFAULT_SHAPES } from "../constants/defaultElements.ts";
+import type { ElementsData } from "../types.ts";
 
 // zustand
 import { useAppStore } from "../store/index.ts";
+import { socket } from "../socket.ts";
 
 const Canvas = () => {
-  // const [shapes, setShapes] = useState<ShapeData[]>([]); // no need to use local state, zustand handles it
   const elements = useAppStore((store) => store.elements);
-
-  console.log(elements);
-  console.log(elements.length);
-
-  // witch tool has been selected
   const selectedTool = useAppStore((store) => store.selectedTool);
+  const addLocalElement = useAppStore((store) => store.addLocalElement);
+
+  // loads existing elements when joining the whiteboard
+  useEffect(() => {
+    const onInitialElements = (data: string) => {
+      let parsedData: unknown;
+      try {
+        parsedData = JSON.parse(data);
+      } catch (error) {
+        console.error("Invalid whiteboard-elements payload", error);
+        return;
+      }
+
+      if (!Array.isArray(parsedData)) {
+        console.error("Expected whiteboard-elements payload to be an array");
+        return;
+      }
+
+      useAppStore.getState().updateElements(parsedData);
+    };
+
+    // listen for elements and update the store
+    const onRecieveElements = (newElement: ElementsData) => {
+      useAppStore.getState().addRemoteElement(newElement);
+    };
+
+    socket.on("whiteboard-elements", onInitialElements);
+    socket.on("drawing-data", onRecieveElements);
+
+    return () => {
+      socket.off("whiteboard-elements", onInitialElements);
+      socket.off("drawing-data", onRecieveElements);
+    };
+  }, []);
 
   function toolClickedHandler(evt: KonvaEventObject<MouseEvent>): void {
     // give me x and y co-ordonates,
@@ -34,7 +63,7 @@ const Canvas = () => {
 
     switch (selectedTool) {
       case "rect": {
-        const newShape: ShapeData = {
+        const newShape: ElementsData = {
           type: selectedTool,
           id: crypto.randomUUID(),
           x: point.x,
@@ -48,13 +77,29 @@ const Canvas = () => {
           rotation: DEFAULT_SHAPES.rect.rotation,
         };
 
-        useAppStore.getState().updateElements([...elements, newShape]);
+        addLocalElement(newShape);
         break;
       }
 
-      case "arrow":
-        DEFAULT_SHAPES.arrow;
+      case "arrow": {
+        const newShape: ElementsData = {
+          type: selectedTool,
+          id: crypto.randomUUID(),
+          start: point,
+          end: {
+            x: point.x + 100,
+            y: point.y + 100,
+          },
+          stroke: DEFAULT_SHAPES.arrow.stroke,
+          strokeWidth: DEFAULT_SHAPES.arrow.strokeWidth,
+          pointerLength: DEFAULT_SHAPES.arrow.pointerLength,
+          pointerWidth: DEFAULT_SHAPES.arrow.pointerWidth,
+          draggable: DEFAULT_SHAPES.arrow.draggable,
+        };
+
+        addLocalElement(newShape);
         break;
+      }
 
       default:
         break;
@@ -78,6 +123,7 @@ const Canvas = () => {
                   y={element.y}
                   width={element.width}
                   height={element.height}
+                  draggable={element.draggable}
                   fill={element.fill}
                   stroke={element.stroke}
                   strokeWidth={element.strokeWidth}
@@ -85,6 +131,7 @@ const Canvas = () => {
                 />
               );
             }
+            return null;
           })}
         </Layer>
       </Stage>

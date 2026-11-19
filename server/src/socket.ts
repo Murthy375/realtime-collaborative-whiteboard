@@ -12,6 +12,7 @@ import { getBannerKeyForWhiteboardForUsers } from "./utils/banners.redis.js";
 
 // register handlers
 import { registerWhiteboardHandlers } from "./handlers/registerWhiteboard.handlers.js";
+import { registerDrawingHandlers } from "./handlers/registerDrawing.handlers.js";
 
 export function initSocket(httpServer: HttpServer): Server {
   const io = new Server(httpServer, {
@@ -22,6 +23,7 @@ export function initSocket(httpServer: HttpServer): Server {
     console.log("user connected : ", socket.id);
 
     registerWhiteboardHandlers(io, socket);
+    registerDrawingHandlers(socket);
 
     socket.on("disconnect", async (reason) => {
       try {
